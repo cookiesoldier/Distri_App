@@ -28,18 +28,14 @@ public class FirebaseCon {
 
             myFirebaseRef = new Firebase("https://helpingteach.firebaseio.com/");
 
-            myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
 
-            myFirebaseRef.child("message").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
-                }
+        }
 
-                @Override
-                public void onCancelled(FirebaseError error) {
-                }
-            });
+
+        public void createUser(String username, String password){
+
+
+
         }
     }
 
