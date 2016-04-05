@@ -46,6 +46,10 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
         if(v == btnLogin){
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragWindow, new Frag_menu())
+                    .addToBackStack(null)
+                    .commit();
 
         }else if(v== btnCreateUser){
             //Skal skifte til createUserFragment
