@@ -7,13 +7,11 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.widget.FrameLayout;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+
+
+import java.net.URL;
 
 import dream_team.distri_app.R;
-import dream_team.distri_app.firebase.FirebaseCon;
 
 public class MainActivity  extends FragmentActivity {
 
@@ -31,9 +29,7 @@ public class MainActivity  extends FragmentActivity {
                     .commit();
         }
 
-        FirebaseCon firebasecon = new FirebaseCon(this);
 
-        firebasecon.setupFirebase();
 
 
     }
