@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import dream_team.distri_app.R;
 
 public class Frag_menu extends Fragment implements View.OnClickListener{
-    Button btn_add;
+    ImageButton btn_add;
 
     public Frag_menu(){
 
@@ -23,7 +25,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rod = inflater.inflate(R.layout.fragment_frag_menu,container,false);
 
-        btn_add = (Button) rod.findViewById(R.id.btn_add);
+        btn_add = (ImageButton) rod.findViewById(R.id.btn_add);
 
         btn_add.setOnClickListener(this);
         return rod;
