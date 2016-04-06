@@ -42,15 +42,23 @@
             android:id="@+id/edtPassword" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="Login"
-            android:id="@+id/btnLogin" />
+            android:id="@+id/btnLogin"
+            android:background="@drawable/roundedges"
+            android:textColor="#FFFFFF"
+            android:layout_margin="5dp"
+            />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="Create New User"
-            android:id="@+id/btnCreateNewUser" />
+            android:id="@+id/btnCreateNewUser"
+            android:background="@drawable/roundedges"
+            android:textColor="#FFFFFF"
+            android:layout_margin="5dp"
+            />
     </LinearLayout>
 </FrameLayout>
