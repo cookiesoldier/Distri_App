@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="dream_team.distri_app.UI.Frag_menu">
+    tools:context="dream_team.distri_app.UI.Frag_room">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Frag_Menu" />
+        android:text="Frag_Room" />
 
     <ImageButton
         android:id="@+id/btn_add"

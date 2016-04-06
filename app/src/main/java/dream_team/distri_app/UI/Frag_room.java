@@ -7,40 +7,36 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import dream_team.distri_app.R;
 
-public class Frag_menu extends Fragment implements View.OnClickListener{
+public class Frag_room extends Fragment implements View.OnClickListener{
     ImageButton btn_add;
 
-    public Frag_menu(){
-
+    public Frag_room() {
+        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rod = inflater.inflate(R.layout.fragment_frag_menu,container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rod = inflater.inflate(R.layout.fragment_frag_room,container,false);
 
         btn_add = (ImageButton) rod.findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
 
         return rod;
     }
-    public void onClick(View v){
-        if(v == btn_add){
+    public void onClick(View v) {
+        if (v == btn_add) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragWindow, new Frag_room())
+                    .replace(R.id.fragWindow, new Frag_event())
                     .addToBackStack(null)
                     .commit();
-           Toast.makeText(getActivity(), "Frag_Room",
-              Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Event)",
+                    Toast.LENGTH_LONG).show();
         }
-
     }
-
-
 }
