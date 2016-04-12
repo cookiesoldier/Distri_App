@@ -31,6 +31,11 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
             ,"2"
             ,"3"
             ,"4"
+            ,"mac"
+            ,"Windows"
+            ,"linux"
+            ,"abe"
+            ,"kage"
                 };
 
     public Frag_menu(){
