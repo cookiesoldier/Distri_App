@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import dream_team.distri_app.R;
 
@@ -46,6 +47,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
         if(v == btnLogin){
+            usernameCheck();
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragWindow, new Frag_menu())
                     .addToBackStack(null)
@@ -62,7 +64,13 @@ public class frag_Login extends Fragment implements View.OnClickListener {
 
     }
 
-
-
-
+    public boolean usernameCheck() {
+        if (edtUsername.getTextSize()<= 8)
+            return true;
+        else {
+            Toast.makeText(getActivity(), " Fejl i Username. Username skal være under 8 bogstaver =)",
+              Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
 }
