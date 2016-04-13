@@ -3,12 +3,14 @@ package dream_team.distri_app.UI;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -35,6 +37,7 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
         View rod = inflater.inflate(R.layout.fragment_frag__create_user, container, false);
 
         btnSubmit =(Button) rod.findViewById(R.id.btnSubmit);
+        btnSubmit.setOnClickListener(this);
 
         edtUsername =(EditText) rod.findViewById(R.id.edtUsername);
         edtPassword1 =(EditText) rod.findViewById(R.id.edtPassword1);
@@ -49,11 +52,17 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
 
     public void onClick(View v) {
         if (v == btnSubmit) {
+            usernameCheck();
 
             new Thread(new Runnable() {
                 public void run() {
 
                     try {
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.fragWindow, new Frag_room())
+                                .addToBackStack(null)
+                                .commit();
+
                         URL url = new URL("http://10.0.2.2:8080/MyServletProject/DoubleMeServlet");
                         URLConnection connection = url.openConnection();
 
@@ -91,10 +100,27 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                         Log.d("Exception", e.toString());
                     }
 
+
                 }
             }).start();
 
 
         }
+    }
+
+
+    public void usernameCheck() {
+        //InputFilter[] filterArray = new InputFilter[1];
+        //filterArray[0] = new InputFilter.LengthFilter(8);
+        //edtUsername.setFilters(filterArray);
+        int maxLength = 8;
+        edtUsername.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
+
+        if (edtUsername.getFilters().length <= 8){
+            Toast.makeText(getActivity(), " Username Succesful =)", Toast.LENGTH_LONG).show();
+        } else if (edtUsername.getFilters().length > 8){
+            Toast.makeText(getActivity(), " Fejl i username. Må ikke være over 8 bogstaver.", Toast.LENGTH_LONG).show();
+        }
+
     }
 }
