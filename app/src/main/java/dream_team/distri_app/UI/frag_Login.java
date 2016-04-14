@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dream_team.distri_app.R;
 
@@ -81,7 +83,16 @@ public class frag_Login extends Fragment implements View.OnClickListener {
 
     public boolean usernameCheck() {
 
+      final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dismissLoadingDialog();
+            }
+        }, 2000);
+
         showLoadingDialog();
+
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -117,6 +128,11 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                         Log.d("CreateUserERROR:", "Something went wrong in server");
                         dismissLoadingDialog();
                     }
+                    if(timer.equals(2000)) {
+                        dismissLoadingDialog();
+                       Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again", Toast.LENGTH_LONG).show();
+
+                    }
                     Log.d("ReturnMessage:", returnString);
                     in.close();
 
@@ -124,7 +140,6 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                 } catch (Exception e) {
                     Log.d("Exception", e.toString());
                 }
-
             }
 
         }).start();
