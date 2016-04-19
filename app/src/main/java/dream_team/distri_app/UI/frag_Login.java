@@ -20,8 +20,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import dream_team.distri_app.R;
 
@@ -60,39 +58,27 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
         if (v == btnLogin) {
-            if (usernameCheck()) {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragWindow, new Frag_menu())
                         .addToBackStack(null)
                         .commit();
-            } else {
-                //??
-            }
+        }
 
-
-        } else if (v == btnCreateUser) {
-            //Skal skifte til createUserFragment
+        else if (v == btnCreateUser){
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragWindow, new Frag_CreateUser())
                     .addToBackStack(null)
                     .commit();
-
+            }
+        else {
+            ////
+        }
         }
 
-    }
 
-    public boolean usernameCheck() {
-
-      final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dismissLoadingDialog();
-            }
-        }, 5000);
+    public void login() {
 
         showLoadingDialog();
-
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -128,12 +114,6 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                         Log.d("CreateUserERROR:", "Something went wrong in server");
                         dismissLoadingDialog();
                     }
-                    if(timer.equals(5000)) {
-                       //Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
-                         //      Toast.LENGTH_LONG).show();
-                        dismissLoadingDialog();
-                    }
-
                     Log.d("ReturnMessage:", returnString);
                     in.close();
 
@@ -141,17 +121,10 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                 } catch (Exception e) {
                     Log.d("Exception", e.toString());
                 }
+
             }
 
         }).start();
-
-        if (edtUsername.getTextSize() <= 8)
-            return true;
-        else {
-            //Toast.makeText(getActivity(), " Fejl i Username. Username skal være under 8 bogstaver =)",
-            //        Toast.LENGTH_SHORT).show();
-            return false;
-        }
     }
 
     public void showLoadingDialog() {
