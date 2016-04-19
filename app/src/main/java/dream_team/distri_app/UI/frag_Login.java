@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dream_team.distri_app.R;
 
@@ -78,11 +80,19 @@ public class frag_Login extends Fragment implements View.OnClickListener {
 
     public void login() {
 
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dismissLoadingDialog();
+            }
+        }, 5000);
+
         showLoadingDialog();
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://10.0.2.2:8080/HelpingTeacherServer2/HTSservlet");
+                    URL url = new URL("http://52.58.137.252:8080/HelpingTeacherServer2/HTSservlet");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                     JSONObject obj = new JSONObject();
@@ -118,8 +128,14 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                     in.close();
 
 
+
                 } catch (Exception e) {
                     Log.d("Exception", e.toString());
+                }
+                if(timer.equals(5000)) {
+                    //Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
+                    //      Toast.LENGTH_LONG).show();
+                    dismissLoadingDialog();
                 }
 
             }

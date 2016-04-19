@@ -75,7 +75,7 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            URL url = new URL("http://10.0.2.2:8080/HelpingTeacherServer2/HTSservlet");
+                            URL url = new URL("http://52.58.137.252:8080/HelpingTeacherServer2/HTSservlet");
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                             JSONObject obj = new JSONObject();
