@@ -89,7 +89,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
             public void run() {
                 dismissLoadingDialog();
             }
-        }, 2000);
+        }, 5000);
 
         showLoadingDialog();
 
@@ -128,11 +128,12 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                         Log.d("CreateUserERROR:", "Something went wrong in server");
                         dismissLoadingDialog();
                     }
-                    if(timer.equals(2000)) {
+                    if(timer.equals(5000)) {
+                       //Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
+                         //      Toast.LENGTH_LONG).show();
                         dismissLoadingDialog();
-                       Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again", Toast.LENGTH_LONG).show();
-
                     }
+
                     Log.d("ReturnMessage:", returnString);
                     in.close();
 
@@ -147,8 +148,8 @@ public class frag_Login extends Fragment implements View.OnClickListener {
         if (edtUsername.getTextSize() <= 8)
             return true;
         else {
-            Toast.makeText(getActivity(), " Fejl i Username. Username skal være under 8 bogstaver =)",
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity(), " Fejl i Username. Username skal være under 8 bogstaver =)",
+            //        Toast.LENGTH_SHORT).show();
             return false;
         }
     }
