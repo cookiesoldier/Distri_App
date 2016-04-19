@@ -58,28 +58,25 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
         if (v == btnLogin) {
-            if (usernameCheck()) {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragWindow, new Frag_menu())
                         .addToBackStack(null)
                         .commit();
-            } else {
-                //??
-            }
+        }
 
-
-        } else if (v == btnCreateUser) {
-            //Skal skifte til createUserFragment
+        else if (v == btnCreateUser){
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragWindow, new Frag_CreateUser())
                     .addToBackStack(null)
                     .commit();
-
+            }
+        else {
+            ////
+        }
         }
 
-    }
 
-    public boolean usernameCheck() {
+    public void login() {
 
         showLoadingDialog();
         new Thread(new Runnable() {
@@ -128,14 +125,6 @@ public class frag_Login extends Fragment implements View.OnClickListener {
             }
 
         }).start();
-
-        if (edtUsername.getTextSize() <= 8)
-            return true;
-        else {
-            Toast.makeText(getActivity(), " Fejl i Username. Username skal være under 8 bogstaver =)",
-                    Toast.LENGTH_LONG).show();
-            return false;
-        }
     }
 
     public void showLoadingDialog() {
