@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,9 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
         edtPassword1 =(EditText) rod.findViewById(R.id.edtPassword1);
         edtPassword2 = (EditText) rod.findViewById(R.id.edtPassword2);
 
+        InputFilter[] filters = new InputFilter[1];
+        filters[0] = new InputFilter.LengthFilter(10); //Filter to 10 characters
+        edtUsername.setFilters(filters);
 
 
         btnSubmit.setOnClickListener(this);
