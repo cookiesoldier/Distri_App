@@ -107,10 +107,13 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                             returnString = in.readLine();
 
                             Log.d(returnString, "");
-                            if (returnString.equals("CONNECTION TO FIREBASE SUCCES")){
+                            if (returnString.equals("CONNECTION TO FIREBASE SUCCES")) {
                                 dismissLoadingDialog();
                                 Toast.makeText(getActivity().getApplicationContext(), "User Created ",
-                                      Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_LONG).show();
+                            } else if(returnString.equals("CONNECTION TO FIREBASE FAILED")){
+                                Toast.makeText(getActivity().getApplicationContext(), "User Already Exists ",
+                                        Toast.LENGTH_LONG).show();
                             } else {
                                 Log.d("CreateUserERROR:", "Something went wrong in server");
                                 dismissLoadingDialog();

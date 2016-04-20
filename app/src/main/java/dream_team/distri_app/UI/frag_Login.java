@@ -35,7 +35,6 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     EditText edtUsername, edtPassword;
 
     private ProgressDialog progress;
-    boolean loginCheck;
 
     public frag_Login() {
         // Required empty public constructor
@@ -56,87 +55,73 @@ public class frag_Login extends Fragment implements View.OnClickListener {
 
         return rod;
     }
-
-    public void login() {
-
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dismissLoadingDialog();
-            }
-        }, 5000);
-
-        showLoadingDialog();
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                    JSONObject obj = new JSONObject();
-                    try {
-                        obj.put("TASK", "loginauth");
-                        obj.put("USERNAME", edtUsername.getText().toString());
-                        obj.put("PASSWORD", edtPassword.getText().toString());
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    String combinedMessage = obj.toString();
-                    Log.d("CombinedMessage", combinedMessage);
-                    //http://developer.android.com/reference/java/net/HttpURLConnection.html
-                    //connection.setDoOutput(true);
-                    //I would like to get a confirmed login - perhaps session ID
-                    connection.setRequestMethod("GET");
-                    OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-                    out.write(combinedMessage);
-                    out.close();
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                    String returnString = "";
-                    returnString = in.readLine();
-                    if (returnString.equals("loginsucces")) {
-                        dismissLoadingDialog();
-                        loginCheck = true;
-                    } else {
-                        Log.d("CreateUserERROR:", "Something went wrong in server");
-                        loginCheck = false;
-                        dismissLoadingDialog();
-                    }
-                    Log.d("ReturnMessage:", returnString);
-                    in.close();
-
-
-
-                } catch (Exception e) {
-                    Log.d("Exception", e.toString());
-                }
-                if(timer.equals(5000)) {
-                    //Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
-                    //      Toast.LENGTH_LONG).show();
-                    dismissLoadingDialog();
-                }
-
-            }
-
-        }).start();
-
-    }
-
     public void onClick(View v) {
         if (v == btnLogin) {
-            if (loginCheck == true) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragWindow, new Frag_menu())
-                        .addToBackStack(null)
-                        .commit();
-            } else if (loginCheck == false){
-                Toast.makeText(getActivity().getApplicationContext(), "User Name or Password dont match up",
-                        Toast.LENGTH_LONG).show();
+
+                final Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        dismissLoadingDialog();
+                    }
+                }, 5000);
+
+                showLoadingDialog();
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            JSONObject obj = new JSONObject();
+                            try {
+                                obj.put("TASK", "loginauth");
+                                obj.put("USERNAME", edtUsername.getText().toString());
+                                obj.put("PASSWORD", edtPassword.getText().toString());
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            String combinedMessage = "?logininfo=" + obj.toString();
+                            Log.d("CombinedMessage", combinedMessage);
+                            URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet"+combinedMessage);
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                            String returnString = "";
+                            returnString = in.readLine();
+                            Log.d(returnString,returnString);
+                            if (returnString.equals("loginsucces")) {
+                                Log.d(returnString,returnString);
+                                getFragmentManager().beginTransaction()
+                                        .replace(R.id.fragWindow, new Frag_menu())
+                                        .addToBackStack(null)
+                                        .commit();
+                                dismissLoadingDialog();
+                            } else if (returnString.equals("loginfailed")) {
+                                Log.d("CreateUserERROR:", "Something went wrong in server");
+                                Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
+                                      Toast.LENGTH_LONG).show();
+                                dismissLoadingDialog();
+                            }
+                            Log.d("ReturnMessage:", returnString);
+                            in.close();
+
+
+
+                        } catch (Exception e) {
+                            Log.d("Exception", e.toString());
+                        }
+                        if(timer.equals(5000)) {
+                            //Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
+                            //      Toast.LENGTH_LONG).show();
+                            dismissLoadingDialog();
+                        }
+
+                    }
+
+                }).start();
+
             }
-        }
+
 
         else if (v == btnCreateUser){
             getFragmentManager().beginTransaction()
@@ -145,6 +130,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                     .commit();
         }
     }
+
 
     public void showLoadingDialog() {
 
