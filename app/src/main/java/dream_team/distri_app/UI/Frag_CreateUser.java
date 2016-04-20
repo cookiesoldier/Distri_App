@@ -79,7 +79,7 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            URL url = new URL("http://52.58.137.252:8080/HelpingTeacherServer2/HTSservlet");
+                            URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet");
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                             JSONObject obj = new JSONObject();
@@ -105,8 +105,12 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
 
                             String returnString = "";
                             returnString = in.readLine();
-                            if (returnString.equals("Succes")) {
+
+                            Log.d(returnString, "");
+                            if (returnString.equals("CONNECTION TO FIREBASE SUCCES")){
                                 dismissLoadingDialog();
+                                Toast.makeText(getActivity().getApplicationContext(), "User Created ",
+                                      Toast.LENGTH_LONG).show();
                             } else {
                                 Log.d("CreateUserERROR:", "Something went wrong in server");
                                 dismissLoadingDialog();
@@ -119,7 +123,7 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                             Log.d("Exception", e.toString());
                         }
 
-                    }
+                }
 
                 }).start();
 

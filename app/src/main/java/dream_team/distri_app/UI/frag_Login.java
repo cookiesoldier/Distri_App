@@ -35,6 +35,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     EditText edtUsername, edtPassword;
 
     private ProgressDialog progress;
+    boolean loginCheck;
 
     public frag_Login() {
         // Required empty public constructor
@@ -56,28 +57,6 @@ public class frag_Login extends Fragment implements View.OnClickListener {
         return rod;
     }
 
-
-    public void onClick(View v) {
-
-        if (v == btnLogin) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragWindow, new Frag_menu())
-                        .addToBackStack(null)
-                        .commit();
-        }
-
-        else if (v == btnCreateUser){
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragWindow, new Frag_CreateUser())
-                    .addToBackStack(null)
-                    .commit();
-            }
-        else {
-            ////
-        }
-        }
-
-
     public void login() {
 
         final Timer timer = new Timer();
@@ -92,7 +71,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://52.58.137.252:8080/HelpingTeacherServer2/HTSservlet");
+                    URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                     JSONObject obj = new JSONObject();
@@ -118,10 +97,12 @@ public class frag_Login extends Fragment implements View.OnClickListener {
 
                     String returnString = "";
                     returnString = in.readLine();
-                    if (returnString.equals("Succes")) {
+                    if (returnString.equals("loginsucces")) {
                         dismissLoadingDialog();
+                        loginCheck = true;
                     } else {
                         Log.d("CreateUserERROR:", "Something went wrong in server");
+                        loginCheck = false;
                         dismissLoadingDialog();
                     }
                     Log.d("ReturnMessage:", returnString);
@@ -141,6 +122,28 @@ public class frag_Login extends Fragment implements View.OnClickListener {
             }
 
         }).start();
+
+    }
+
+    public void onClick(View v) {
+        if (v == btnLogin) {
+            if (loginCheck == true) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragWindow, new Frag_menu())
+                        .addToBackStack(null)
+                        .commit();
+            } else if (loginCheck == false){
+                Toast.makeText(getActivity().getApplicationContext(), "User Name or Password dont match up",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+
+        else if (v == btnCreateUser){
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragWindow, new Frag_CreateUser())
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     public void showLoadingDialog() {
