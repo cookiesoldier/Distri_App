@@ -30,7 +30,7 @@ import dream_team.distri_app.R;
 public class Frag_CreateUser extends Fragment implements View.OnClickListener {
 
     Button btnSubmit;
-    EditText edtUsername, edtPassword1,edtPassword2;
+    EditText edtUsername, edtPassword1,edtPassword2,edtEmail,edtFirstName,edtLastName;
 
     private ProgressDialog progress;
 
@@ -48,6 +48,9 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
         edtUsername =(EditText) rod.findViewById(R.id.edtUsername);
         edtPassword1 =(EditText) rod.findViewById(R.id.edtPassword1);
         edtPassword2 = (EditText) rod.findViewById(R.id.edtPassword2);
+        edtEmail = (EditText) rod.findViewById(R.id.edtEmail);
+        edtFirstName = (EditText) rod.findViewById(R.id.edtFirstName);
+        edtLastName = (EditText) rod.findViewById(R.id.edtLastName);
 
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter.LengthFilter(10); //Filter to 10 characters
@@ -88,6 +91,9 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                                 obj.put("USERNAME", edtUsername.getText().toString());
                                 obj.put("PASSONE", edtPassword2.getText().toString());
                                 obj.put("PASSTWO", edtPassword1.getText().toString());
+                                obj.put("",edtEmail.getText().toString());
+                                obj.put("",edtFirstName.getText().toString());
+                                obj.put("",edtLastName.getText().toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
