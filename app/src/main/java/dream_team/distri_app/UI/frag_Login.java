@@ -34,6 +34,9 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     Button btnCreateUser, btnLogin;
     EditText edtUsername, edtPassword;
 
+    public static String sessionKey,userName;
+    String key;
+
     private ProgressDialog progress;
 
     public frag_Login() {
@@ -75,7 +78,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                                 obj.put("TASK", "loginauth");
                                 obj.put("USERNAME", edtUsername.getText().toString());
                                 obj.put("PASSWORD", edtPassword.getText().toString());
-
+                                obj.put("SESSIONKEY",key);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -90,6 +93,9 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                             returnString = in.readLine();
                             Log.d(returnString,returnString);
                             if (returnString.equals("loginsucces")) {
+                                userName = edtUsername.getText().toString();
+                                sessionKey = key;
+
                                 Log.d(returnString,returnString);
                                 getFragmentManager().beginTransaction()
                                         .replace(R.id.fragWindow, new Frag_menu())

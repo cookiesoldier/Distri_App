@@ -17,8 +17,14 @@ import dream_team.distri_app.R;
 public class Frag_menu extends Fragment implements View.OnClickListener{
     ImageButton btn_add;
     TextView textView;
+
+    private String userName = ("UserName: " + frag_Login.userName);
+    private String sessionKey = frag_Login.sessionKey;
+
     String[] roomListe = new String[] {
-            "Cupcake"
+            userName
+            //,sessionKey
+            ,"Cupcake"
             ,"Donut"
             ,"Eclair"
             ,"Froyo"
@@ -37,6 +43,9 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
             ,"abe"
             ,"kage"
                 };
+
+
+
 
     public Frag_menu(){
     }

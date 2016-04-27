@@ -23,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dream_team.distri_app.R;
 
@@ -63,6 +65,15 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
 
 
     public void onClick(View v) {
+
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dismissLoadingDialog();
+            }
+        }, 5000);
+
         if (v == btnSubmit) {
             showLoadingDialog();
             if( edtUsername.getText().toString().toLowerCase().contains("username") ||
@@ -130,6 +141,11 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
 
                         } catch (Exception e) {
                             Log.d("Exception", e.toString());
+                        }
+                        if(timer.equals(5000)) {
+                            Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
+                                  Toast.LENGTH_LONG).show();
+                            dismissLoadingDialog();
                         }
 
                 }
