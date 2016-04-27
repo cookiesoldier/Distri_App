@@ -97,6 +97,12 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                             if (answer.get("REPLY").equals("succes")) {
                                 userName = edtUsername.getText().toString();
                                 sessionKey = answer.get("SESSIONKEY").toString();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(),"Login Success", Toast.LENGTH_LONG).show();
+                                    }
+                                });
 
                                 Log.d(returnString,returnString);
 
@@ -105,12 +111,17 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                                         .addToBackStack(null)
                                         .commit();
                                 dismissLoadingDialog();
-                            } else if (returnString.equals("loginfailed")) {
+                            } else if (answer.get("REPLY").equals("failed")) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "Login Failed!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 Log.d("CreateUserERROR:", "Something went wrong in server");
-                                Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
-                                        Toast.LENGTH_LONG).show();
                                 dismissLoadingDialog();
                             }
+
                             Log.d("ReturnMessage:", returnString);
                             in.close();
 
