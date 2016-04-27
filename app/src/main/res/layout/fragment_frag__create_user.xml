@@ -77,7 +77,6 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/edtEmail"
             android:singleLine="true"
@@ -94,7 +93,6 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/edtFirstName"
             android:singleLine="true"
@@ -111,7 +109,6 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/edtLastName"
             android:singleLine="true"

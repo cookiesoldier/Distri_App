@@ -122,18 +122,28 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
 
                             String returnString = "";
                             returnString = in.readLine();
+                            JSONObject answer = new JSONObject(returnString);
 
                             Log.d(returnString, "");
-                            if (returnString.equals("CONNECTION TO FIREBASE SUCCES")) {
+                            if (returnString.equals(obj)) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "User Created!!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 dismissLoadingDialog();
-                                Toast.makeText(getActivity().getApplicationContext(), "User Created ",
-                                        Toast.LENGTH_LONG).show();
-                            } else if(returnString.equals("CONNECTION TO FIREBASE FAILED")){
-                                Toast.makeText(getActivity().getApplicationContext(), "User Already Exists ",
-                                        Toast.LENGTH_LONG).show();
+                            } else if(answer.get("REPLY").equals("failed")){
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "User already exists!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                dismissLoadingDialog();
                             } else {
-                                Log.d("CreateUserERROR:", "Something went wrong in server");
-                                dismissLoadingDialog();
+                                //Log.d("CreateUserERROR:", "Something went wrong in server");
+                                //dismissLoadingDialog();
                             }
                             Log.d("ReturnMessage:", returnString);
                             in.close();
