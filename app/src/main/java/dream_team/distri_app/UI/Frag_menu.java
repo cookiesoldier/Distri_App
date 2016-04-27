@@ -23,7 +23,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
 
     String[] roomListe = new String[] {
             userName
-            //,sessionKey
+            ,sessionKey
             ,"Cupcake"
             ,"Donut"
             ,"Eclair"

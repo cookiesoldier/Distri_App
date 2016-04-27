@@ -35,7 +35,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     EditText edtUsername, edtPassword;
 
     public static String sessionKey,userName;
-    String key;
+
 
     private ProgressDialog progress;
 
@@ -78,7 +78,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                                 obj.put("TASK", "loginauth");
                                 obj.put("USERNAME", edtUsername.getText().toString());
                                 obj.put("PASSWORD", edtPassword.getText().toString());
-                                obj.put("SESSIONKEY",key);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -92,11 +92,14 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                             String returnString = "";
                             returnString = in.readLine();
                             Log.d(returnString,returnString);
-                            if (returnString.equals("loginsucces")) {
+                            JSONObject answer = new JSONObject(returnString);
+
+                            if (answer.get("REPLY").equals("succes")) {
                                 userName = edtUsername.getText().toString();
-                                sessionKey = key;
+                                sessionKey = answer.get("SESSIONKEY").toString();
 
                                 Log.d(returnString,returnString);
+
                                 getFragmentManager().beginTransaction()
                                         .replace(R.id.fragWindow, new Frag_menu())
                                         .addToBackStack(null)
@@ -105,7 +108,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                             } else if (returnString.equals("loginfailed")) {
                                 Log.d("CreateUserERROR:", "Something went wrong in server");
                                 Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
-                                      Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_LONG).show();
                                 dismissLoadingDialog();
                             }
                             Log.d("ReturnMessage:", returnString);
