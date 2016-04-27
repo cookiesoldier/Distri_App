@@ -70,6 +70,7 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                 }, 5000);
 
                 showLoadingDialog();
+
                 new Thread(new Runnable() {
                     public void run() {
                         try {

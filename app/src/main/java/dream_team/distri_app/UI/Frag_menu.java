@@ -2,6 +2,7 @@ package dream_team.distri_app.UI;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +13,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import dream_team.distri_app.R;
 
 public class Frag_menu extends Fragment implements View.OnClickListener{
     ImageButton btn_add;
     TextView textView;
 
-    private String userName = ("UserName: " + frag_Login.userName);
+    private String userName = frag_Login.userName;
     private String sessionKey = frag_Login.sessionKey;
 
+    String room;
     String[] roomListe = new String[] {
             userName
             ,sessionKey
-            ,"Cupcake"
+            //,room
             ,"Donut"
             ,"Eclair"
             ,"Froyo"
@@ -44,9 +54,6 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
             ,"kage"
                 };
 
-
-
-
     public Frag_menu(){
     }
 
@@ -59,11 +66,53 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
 
         textView = (TextView) getActivity().findViewById(R.id.textViewListe);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    JSONObject obj = new JSONObject();
+                    try {
+                        obj.put("TASK", "getroom");
+                        obj.put("USERNAME", userName);
+                        obj.put("SESSIONKEY", sessionKey);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String combinedMessage = "?logininfo=" + obj.toString();
+                    Log.d("CombinedMessage", combinedMessage);
+                    URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet"+combinedMessage);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String returnString = "";
+                    returnString = in.readLine();
+                    Log.d(returnString,returnString);
+                    JSONObject answer = new JSONObject(returnString);
+
+                    if (answer.get("REPLY").equals("succes")) {
+                        //room = answer.get("SESSIONKEY").toString();
+                        Log.d(returnString,returnString);
+                    }
+                    Log.d("ReturnMessage:", returnString);
+                    in.close();
+
+
+
+                } catch (Exception e) {
+                    Log.d("Exception", e.toString());
+                }
+
+            }
+
+        }).start();
+
+
+        final ArrayAdapter<String> roomListAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, roomListe);
 
         ListView lv = (ListView)rod.findViewById(R.id.list);
-        lv.setAdapter(adapter);
+        lv.setAdapter(roomListAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -72,13 +121,15 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                         .replace(R.id.fragWindow, new Frag_room())
                         .addToBackStack(null)
                         .commit();
-                Toast.makeText(getActivity(), "Liste click Frag_room " + adapter.getItem(position),
+                Toast.makeText(getActivity(), "Liste click Frag_room " + roomListAdapter.getItem(position),
                         Toast.LENGTH_SHORT).show();
             }
         });
-
         return rod;
     }
+
+
+
     public void onClick(View v){
         if(v == btn_add){
             getFragmentManager().beginTransaction()
@@ -87,6 +138,8 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                     .commit();
            Toast.makeText(getActivity(), "Button click Frag_Room ",
               Toast.LENGTH_SHORT).show();
+
+
         }
 
     }
