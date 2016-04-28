@@ -133,21 +133,14 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                                         Toast.makeText(getActivity().getApplicationContext(), "User Create!", Toast.LENGTH_LONG).show();
                                     }
                                 });
-                                dismissLoadingDialog();
-                            }
-                               /* if (returnString.equals(obj)) {
-                                getActivity().runOnUiThread(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(), "User Created!!", Toast.LENGTH_LONG).show();
-                                    }
-
-                                });
 
                                 dismissLoadingDialog();
+                                getFragmentManager().beginTransaction()
+                                        .replace(R.id.fragWindow, new frag_Login())
+                                        .addToBackStack(null)
+                                        .commit();
 
-                            }*/ else if(answer.get("REPLY").equals("failed")) {
+                            } else if(answer.get("REPLY").equals("failed")) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
