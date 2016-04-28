@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Username"
-            android:id="@+id/textView4" />
+            android:id="@+id/txtVUserName" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Password"
-            android:id="@+id/textView5" />
+            android:id="@+id/txtVPassword" />
 
         <EditText
             android:layout_width="wrap_content"

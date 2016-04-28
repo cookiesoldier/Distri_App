@@ -1,8 +1,6 @@
 package dream_team.distri_app.UI;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,7 +27,7 @@ import dream_team.distri_app.R;
 public class Frag_CreateRoom extends Fragment {
 
     Button btnSubmitRoom;
-    EditText edtRoomName,edtPublicPrivate ;
+    EditText edtRoomName, edtType;
 
     private String userName = frag_Login.userName;
     private String sessionKey = frag_Login.sessionKey;
@@ -48,7 +46,7 @@ public class Frag_CreateRoom extends Fragment {
         btnSubmitRoom = (Button) rod.findViewById(R.id.btnSubmitRoom);
 
         edtRoomName =(EditText) rod.findViewById(R.id.edtRoomName);
-        edtPublicPrivate = (EditText) rod.findViewById(R.id.edtPublicPrivate);
+        edtType = (EditText) rod.findViewById(R.id.edtPublicPrivate);
 
 
         return rod;
@@ -77,10 +75,10 @@ public class Frag_CreateRoom extends Fragment {
                         JSONObject obj = new JSONObject();
                         try {
                             obj.put("TASK", "CREATEROOM");
+                            obj.put("TITLE", edtRoomName.getText().toString());
                             obj.put("OWNER", userName);
-                            obj.put("SESSIONKEY", sessionKey);
-                            obj.put("type", edtPublicPrivate.getText().toString());
-                            obj.put("", edtRoomName.getText().toString());
+                            obj.put("type", edtType.getText().toString());
+                            //obj.put("SESSIONKEY", sessionKey);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -101,12 +99,26 @@ public class Frag_CreateRoom extends Fragment {
                         returnString = in.readLine();
                         JSONObject answer = new JSONObject(returnString);
 
+                        Log.d(returnString, "");
+
                         if (answer.get("REPLY").equals("succes")){
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.fragWindow, new Frag_menu())
-                                    .addToBackStack(null)
-                                    .commit();
-                            dismissLoadingDialog();
+                            Log.d("ReturnMessage:", returnString);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity().getApplicationContext(), "Room is made", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        } else if(answer.get("REPLY").equals("failed")){
+                            Log.d("ReturnMessage:", returnString);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity().getApplicationContext(), "Cant make the room", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
 
                         }
 
@@ -115,11 +127,6 @@ public class Frag_CreateRoom extends Fragment {
 
                     } catch (Exception e) {
                         Log.d("Exception", e.toString());
-                    }
-                    if (timer.equals(5000)) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Something went wrong" + "Please try again",
-                                Toast.LENGTH_LONG).show();
-                        dismissLoadingDialog();
                     }
 
                 }

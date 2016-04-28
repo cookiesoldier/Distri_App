@@ -64,7 +64,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
         btn_add = (ImageButton) rod.findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
 
-        textView = (TextView) getActivity().findViewById(R.id.textViewListe);
+        textView = (TextView) getActivity().findViewById(R.id.txtVListe);
 
         new Thread(new Runnable() {
             public void run() {
@@ -137,7 +137,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                     .addToBackStack(null)
                     .commit();
            Toast.makeText(getActivity(), "Create Room ",
-              Toast.LENGTH_SHORT).show();
+              Toast.LENGTH_LONG).show();
 
 
         }

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Room Name"
-            android:id="@+id/textView6" />
+            android:id="@+id/txtVRoomName" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Public or Private"
-            android:id="@+id/textView7" />
+            android:id="@+id/txtVtype" />
 
         <EditText
             android:layout_width="wrap_content"
