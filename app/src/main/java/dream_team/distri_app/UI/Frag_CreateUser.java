@@ -102,9 +102,9 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                                 obj.put("USERNAME", edtUsername.getText().toString());
                                 obj.put("PASSONE", edtPassword2.getText().toString());
                                 obj.put("PASSTWO", edtPassword1.getText().toString());
-                                obj.put("",edtEmail.getText().toString());
-                                obj.put("",edtFirstName.getText().toString());
-                                obj.put("",edtLastName.getText().toString());
+                                obj.put("EMAIL",edtEmail.getText().toString());
+                                obj.put("FIRSTNAME",edtFirstName.getText().toString());
+                                obj.put("LASTNAME",edtLastName.getText().toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -125,15 +125,29 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                             JSONObject answer = new JSONObject(returnString);
 
                             Log.d(returnString, "");
-                            if (returnString.equals(obj)) {
+
+                            if(answer.get("REPLY").equals("succes")){
                                 getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "User Create!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                dismissLoadingDialog();
+                            }
+                               /* if (returnString.equals(obj)) {
+                                getActivity().runOnUiThread(new Runnable() {
+
                                     @Override
                                     public void run() {
                                         Toast.makeText(getActivity().getApplicationContext(), "User Created!!", Toast.LENGTH_LONG).show();
                                     }
+
                                 });
+
                                 dismissLoadingDialog();
-                            } else if(answer.get("REPLY").equals("failed")){
+
+                            }*/ else if(answer.get("REPLY").equals("failed")) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -141,9 +155,7 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                                     }
                                 });
                                 dismissLoadingDialog();
-                            } else {
-                                //Log.d("CreateUserERROR:", "Something went wrong in server");
-                                //dismissLoadingDialog();
+
                             }
                             Log.d("ReturnMessage:", returnString);
                             in.close();
@@ -157,6 +169,7 @@ public class Frag_CreateUser extends Fragment implements View.OnClickListener {
                                   Toast.LENGTH_LONG).show();
                             dismissLoadingDialog();
                         }
+
 
                 }
 

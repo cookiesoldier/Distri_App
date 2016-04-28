@@ -91,7 +91,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                     JSONObject answer = new JSONObject(returnString);
 
                     if (answer.get("REPLY").equals("succes")) {
-                        //room = answer.get("SESSIONKEY").toString();
+                        room = answer.get("ROOM").toString();
                         Log.d(returnString,returnString);
                     }
                     Log.d("ReturnMessage:", returnString);
@@ -133,10 +133,10 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
     public void onClick(View v){
         if(v == btn_add){
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragWindow, new Frag_room())
+                    .replace(R.id.fragWindow, new Frag_CreateRoom())
                     .addToBackStack(null)
                     .commit();
-           Toast.makeText(getActivity(), "Button click Frag_Room ",
+           Toast.makeText(getActivity(), "Create Room ",
               Toast.LENGTH_SHORT).show();
 
 
