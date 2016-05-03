@@ -29,8 +29,9 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
     Button btnSubmitRoom;
     EditText edtRoomName, edtType;
 
-    private String userName = frag_Login.userName;
-    private String sessionKey = frag_Login.sessionKey;
+    private String userName = frag_Login.userName; //Bruger navn hentes fra login
+    private String sessionKey = frag_Login.sessionKey; //Hentes som en den af det return der kommer fra serveren når man logger ind.
+    private String roomKey;
 
     private ProgressDialog progress;
 
@@ -79,8 +80,9 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                             obj.put("TASK", "CREATEROOM");
                             obj.put("TITLE", edtRoomName.getText().toString());
                             obj.put("OWNER", userName);
-                            obj.put("type", edtType.getText().toString());
-                            //obj.put("SESSIONKEY", sessionKey);
+                            obj.put("TYPE", edtType.getText().toString());
+                            obj.put("SESSIONKEY", sessionKey);
+                            obj.put("USERNAME",userName);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -99,21 +101,39 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
 
                         String returnString = "";
                         returnString = in.readLine();
-                        JSONObject answer = new JSONObject(returnString);
 
                         Log.d(returnString, "");
 
                         Log.d("ReturnMessage:", returnString);
+                        JSONObject answer = new JSONObject(returnString);
 
                         if (answer.get("REPLY").equals("succes")){
                             Log.d("ReturnMessage:", returnString);
                             Log.d(answer.get("ROOM").toString(),"room");
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "Room is made", Toast.LENGTH_LONG).show();
-                                }
-                            });
+
+                            //roomKey = answer.getString("").toString();
+
+                            //obj.put("TASK", "UPDATEUSER");
+                            //obj.put("subbedrooms", roomKey);
+                            if (answer.get("REPLY").equals("succes")) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "Room is made", Toast.LENGTH_LONG).show();
+                                    }
+
+                                });
+                            } else if(answer.get("REPLY").equals("failed")){
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "Room not made", Toast.LENGTH_LONG).show();
+                                    }
+
+                                });
+                            }
+
+
 
                         } else if(answer.get("REPLY").equals("failed")){
                             Log.d("ReturnMessage:", returnString);
@@ -134,6 +154,7 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
 
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         Log.d("Exception", e.toString());
                     }
 
