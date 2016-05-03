@@ -24,7 +24,7 @@ import java.util.TimerTask;
 
 import dream_team.distri_app.R;
 
-public class Frag_CreateRoom extends Fragment {
+public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
 
     Button btnSubmitRoom;
     EditText edtRoomName, edtType;
@@ -49,7 +49,9 @@ public class Frag_CreateRoom extends Fragment {
         edtType = (EditText) rod.findViewById(R.id.edtPublicPrivate);
 
 
+        btnSubmitRoom.setOnClickListener(this);
         return rod;
+
     }
 
 
@@ -101,8 +103,11 @@ public class Frag_CreateRoom extends Fragment {
 
                         Log.d(returnString, "");
 
+                        Log.d("ReturnMessage:", returnString);
+
                         if (answer.get("REPLY").equals("succes")){
                             Log.d("ReturnMessage:", returnString);
+                            Log.d(answer.get("ROOM").toString(),"room");
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -120,6 +125,9 @@ public class Frag_CreateRoom extends Fragment {
                             });
 
 
+                        }
+                        else{
+                            Toast.makeText(getActivity().getApplicationContext(), "Fail", Toast.LENGTH_LONG).show();
                         }
 
                         Log.d(returnString, "");

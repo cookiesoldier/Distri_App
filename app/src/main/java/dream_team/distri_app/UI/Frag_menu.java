@@ -34,7 +34,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
     String[] roomListe = new String[] {
             userName
             ,sessionKey
-            //,room
+            //,room.toString()
             ,"Donut"
             ,"Eclair"
             ,"Froyo"
@@ -93,9 +93,19 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                     if (answer.get("REPLY").equals("succes")) {
                         room = answer.get("ROOM").toString();
                         Log.d(returnString,returnString);
+                        Log.d("room",room);
+                        Toast.makeText(getActivity(), "Liste of rooms  " , Toast.LENGTH_SHORT).show();
+
+
+                    } else if(answer.get("REPLY").equals("failed")){
+                        Toast.makeText(getActivity(), " cant get the list " , Toast.LENGTH_SHORT).show();
+
+                    }else {
+                        Toast.makeText(getActivity(), "fejl 40" , Toast.LENGTH_SHORT).show();
                     }
                     Log.d("ReturnMessage:", returnString);
                     in.close();
+
 
 
 
@@ -106,6 +116,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
             }
 
         }).start();
+
 
 
         final ArrayAdapter<String> roomListAdapter = new ArrayAdapter<String>(getActivity(),
