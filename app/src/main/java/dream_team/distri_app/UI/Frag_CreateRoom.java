@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.acl.Owner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,7 +32,9 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
 
     private String userName = frag_Login.userName; //Bruger navn hentes fra login
     private String sessionKey = frag_Login.sessionKey; //Hentes som en den af det return der kommer fra serveren når man logger ind.
-    private String roomKey;
+    String roomKey;
+    String serversRooms;
+    String listRoom;
 
     private ProgressDialog progress;
 
@@ -106,15 +109,18 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
 
                         Log.d("ReturnMessage:", returnString);
                         JSONObject answer = new JSONObject(returnString);
+                        JSONObject room = new JSONObject(answer.get("ROOM").toString());
 
                         if (answer.get("REPLY").equals("succes")){
-                            Log.d("ReturnMessage:", returnString);
-                            Log.d(answer.get("ROOM").toString(),"room");
-
-                            //roomKey = answer.getString("").toString();
+                            roomKey = room.get("ROOMKEY").toString();
+                            Log.d("ROOMKEY", roomKey);
 
                             //obj.put("TASK", "UPDATEUSER");
-                            //obj.put("subbedrooms", roomKey);
+                            //serversRooms = answer.get("subbedrooms").toString();
+                            //Log.d("GET ROOM", serversRooms);
+                            //listRoom = serversRooms + roomKey;
+
+
                             if (answer.get("REPLY").equals("succes")) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
@@ -123,6 +129,12 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                                     }
 
                                 });
+                                dismissLoadingDialog();
+                                getFragmentManager().beginTransaction()
+                                        .replace(R.id.fragWindow, new Frag_event())
+                                        .addToBackStack(null)
+                                        .commit();
+
                             } else if(answer.get("REPLY").equals("failed")){
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
