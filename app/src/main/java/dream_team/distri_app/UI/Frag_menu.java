@@ -35,24 +35,7 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
             userName
             ,sessionKey
             //,room.toString()
-            ,"Donut"
-            ,"Eclair"
-            ,"Froyo"
-            ,"Gingerbread"
-            ,"Honeycomb"
-            ,"Ice Cream SandWich"
-            ,"Jelly Bean"
-            ,"KitKat"
-            ,"1"
-            ,"2"
-            ,"3"
-            ,"4"
-            ,"mac"
-            ,"Windows"
-            ,"linux"
-            ,"abe"
-            ,"kage"
-                };
+            };
 
     public Frag_menu(){
     }
@@ -71,9 +54,10 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                 try {
                     JSONObject obj = new JSONObject();
                     try {
-                        obj.put("TASK", "getroom");
+                        obj.put("TASK", "getuser");
                         obj.put("USERNAME", userName);
                         obj.put("SESSIONKEY", sessionKey);
+                        obj.put("GETNAME",userName);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -89,9 +73,12 @@ public class Frag_menu extends Fragment implements View.OnClickListener{
                     returnString = in.readLine();
                     Log.d(returnString,returnString);
                     JSONObject answer = new JSONObject(returnString);
+                    room = answer.get("USER").toString();
+
+                    Log.d("ReturnMessageROOM:", returnString);
+
 
                     if (answer.get("REPLY").equals("succes")) {
-                        room = answer.get("ROOM").toString();
                         Log.d(returnString,returnString);
                         Log.d("room",room);
                         Toast.makeText(getActivity(), "Liste of rooms  " , Toast.LENGTH_SHORT).show();
