@@ -115,12 +115,22 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                             roomKey = room.get("ROOMKEY").toString();
                             Log.d("ROOMKEY", roomKey);
 
-                            //obj.put("TASK", "UPDATEUSER");
+
+                            /*JSONObject obj2 = new JSONObject();
+                            try {
+                                obj2.put("TASK", "UPDATEUSER");
+                                obj2.put("SESSIONKEY", sessionKey);
+                                obj2.put("USERNAME",userName);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             //serversRooms = answer.get("subbedrooms").toString();
                             //Log.d("GET ROOM", serversRooms);
                             //listRoom = serversRooms + roomKey;
 
-
+*/
                             if (answer.get("REPLY").equals("succes")) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
