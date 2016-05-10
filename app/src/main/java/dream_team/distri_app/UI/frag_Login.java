@@ -101,17 +101,17 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(),"Login Success", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
                                     }
                                 });
 
-                                Log.d(returnString,returnString);
-
+                                Log.d(returnString, returnString);
+                                dismissLoadingDialog();
                                 getFragmentManager().beginTransaction()
                                         .replace(R.id.fragWindow, new Frag_menu())
                                         .addToBackStack(null)
                                         .commit();
-                                dismissLoadingDialog();
+
                             } else if (answer.get("REPLY").equals("failed")) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
