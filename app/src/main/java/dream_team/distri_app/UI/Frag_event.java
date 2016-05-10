@@ -26,7 +26,8 @@ import java.util.TimerTask;
 import dream_team.distri_app.R;
 
 public class Frag_event extends Fragment implements View.OnClickListener {
-    ImageButton btn_add;
+
+    ImageButton btn_addEvent;
 
     ProgressDialog progress;
     private String sessionKey = frag_Login.sessionKey;
@@ -43,13 +44,44 @@ public class Frag_event extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rod = inflater.inflate(R.layout.fragment_frag_event,container,false);
 
-        btn_add = (ImageButton) rod.findViewById(R.id.btn_add);
-        btn_add.setOnClickListener(this);
+        btn_addEvent = (ImageButton) rod.findViewById(R.id.btn_addEvent);
+        btn_addEvent.setOnClickListener(this);
 
         return rod;
     }
 
     public void onClick(View v) {
+        if (v == btn_addEvent) {
+            Log.d("skift til create event","");
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragWindow, new Frag_CreateEvent())
+                    .addToBackStack(null)
+                    .commit();
+            Toast.makeText(getActivity(), "Create Event ",
+                    Toast.LENGTH_LONG).show();
+         }
+
+    }
+
+    public void showLoadingDialog() {
+
+        if (progress == null) {
+            progress = new ProgressDialog(getActivity());
+            progress.setTitle("Loading");
+            progress.setMessage("Wait while Loading...");
+        }
+        progress.show();
+    }
+
+
+    public void dismissLoadingDialog() {
+
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+        }
+    }
+
+    public void ListEvents(){
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -58,7 +90,6 @@ public class Frag_event extends Fragment implements View.OnClickListener {
             }
         }, 5000);
 
-        if (v == btn_add) {
             showLoadingDialog();
 
             new Thread(new Runnable() {
@@ -77,7 +108,7 @@ public class Frag_event extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                         String combinedMessage = obj.toString();
-                        Log.d("CombinedMessage", combinedMessage);
+                        Log.d("GeteventCombined", combinedMessage);
                         //http://developer.android.com/reference/java/net/HttpURLConnection.html
                         connection.setDoOutput(true);
                         //i would like to PUT
@@ -110,11 +141,6 @@ public class Frag_event extends Fragment implements View.OnClickListener {
                                 }
                             });
 
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.fragWindow, new Frag_CreateEvent())
-                                    .addToBackStack(null)
-                                    .commit();
-
                         } else if(answer.get("REPLY").equals("failed")){
                             Log.d("ReturnMessage:", returnString);
                             getActivity().runOnUiThread(new Runnable() {
@@ -143,24 +169,5 @@ public class Frag_event extends Fragment implements View.OnClickListener {
 
         }
 
-        }
-
-    public void showLoadingDialog() {
-
-        if (progress == null) {
-            progress = new ProgressDialog(getActivity());
-            progress.setTitle("Loading");
-            progress.setMessage("Wait while Loading...");
-        }
-        progress.show();
     }
 
-
-    public void dismissLoadingDialog() {
-
-        if (progress != null && progress.isShowing()) {
-            progress.dismiss();
-        }
-    }
-
-}

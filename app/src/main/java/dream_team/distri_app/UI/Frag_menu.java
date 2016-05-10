@@ -83,7 +83,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("Run Run", "while loop");
+                    //Log.d("Run Run", "while loop");
 
                 }
             }
