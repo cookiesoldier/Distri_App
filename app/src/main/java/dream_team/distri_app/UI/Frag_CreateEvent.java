@@ -32,10 +32,14 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
 
     private ProgressDialog progress;
     private String sessionKey = frag_Login.sessionKey;
+    private String username = frag_Login.userName;
 
     // TimeStamp
     Long tsLong = System.currentTimeMillis()/1000;
     String TimeStamp = tsLong.toString();
+
+    String Title;
+    String eventKey;
 
 
     public Frag_CreateEvent() {
@@ -51,7 +55,7 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
         btnSubmitEvent = (Button) rod.findViewById(R.id.btnSubmitEvent);
         edtQuestion = (EditText) rod.findViewById(R.id.edtQuestion);
 
-        btnSubmitEvent.setOnClickListener(this);
+
 
         return rod;
 
@@ -80,6 +84,7 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
                         JSONObject obj = new JSONObject();
                         try {
                             obj.put("TASK", "CREATEEVENT");
+                            obj.put("CREATOR", username);
                             obj.put("TITLE", edtQuestion.getText().toString());
                             obj.put("TIMESTAMP", TimeStamp);
                             obj.put("SESSIONKEY", sessionKey);
@@ -102,12 +107,18 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
                         String returnString = "";
                         returnString = in.readLine();
                         JSONObject answer = new JSONObject(returnString);
+                        JSONObject event = new JSONObject(answer.get("EVENT").toString());
 
                         Log.d(returnString, "");
 
-                        Log.d("ReturnMessage:", returnString);
+                        Log.d("CreateEventReturn1:", returnString);
 
                         if (answer.get("REPLY").equals("succes")){
+                            username = answer.get("USERNAME").toString();
+                            TimeStamp = answer.get("TIMESTAMP").toString();
+                            Title = answer.get("TITLE").toString();
+                            eventKey = event.get("EVENTKEY").toString();
+
                             Log.d("ReturnMessage:", returnString);
                             Log.d(answer.get("EVENT").toString(),"event");
                             getActivity().runOnUiThread(new Runnable() {
@@ -136,6 +147,7 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
 
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         Log.d("Exception", e.toString());
                     }
 
