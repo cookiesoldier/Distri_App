@@ -22,6 +22,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import dream_team.distri_app.R;
@@ -30,19 +33,19 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     ImageButton btn_add;
     TextView textView;
     GetSet getset;
+
     final AtomicBoolean guiUpdaterBool = new AtomicBoolean(false);
     private String userName = frag_Login.userName;
     private String sessionKey = frag_Login.sessionKey;
     private ProgressDialog progress;
-    public static String subRoom,r1;
     private JSONObject myUser,myRoom;
-    String roomKeyString,keyString;
+    String roomKeyString;
 
-    String[] roomKeyList =new String[]{};
-    String[] roomListeName = new String[] {
-            userName
-            ,sessionKey
-            };
+
+    List<String> roomKeyList;
+    List<String> roomNameList = new ArrayList<String>();
+
+
 
     public Frag_menu(){
     }
@@ -56,12 +59,16 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         textView = (TextView) getActivity().findViewById(R.id.txtVListe);
 
+       roomNameList.add("KEY");
+       roomNameList.add(sessionKey);
+
+
+
 
         //Skulle gerne kaldes her omkkring...
         showLoadingDialog();
         getset = new GetSet();
         GetUser getUser = (GetUser) new GetUser().execute(userName);
-       // GetRoom getRoom = (GetRoom) new GetRoom().execute(userName);
 
         Thread guiUpdate = new Thread(new Runnable() {
             @Override
@@ -72,6 +79,14 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         Log.d("MyUser from server", myUser.toString());
                         //kalder metode værk som opdaterer felter.
 
+                        GetRoom getRoom = (GetRoom) new GetRoom().execute(userName);
+
+
+                        try {
+                            updateGUImethod();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
                         guiUpdaterBool.set(false);
@@ -79,7 +94,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
                     }
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -88,6 +103,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                 }
             }
         });
+
         guiUpdate.start();
 
 
@@ -95,9 +111,8 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
 
 
-
         final ArrayAdapter<String> roomListAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, roomListeName);
+                android.R.layout.simple_list_item_1, roomNameList);
 
         ListView lv = (ListView)rod.findViewById(R.id.list);
         lv.setAdapter(roomListAdapter);
@@ -116,6 +131,31 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         return rod;
     }
 
+    private void updateGUImethod() throws JSONException {
+        createRoomList(myUser);
+        pobulateUILists();
+
+    }
+
+    private void pobulateUILists() {
+
+    }
+
+    private void createRoomList(JSONObject myUser) throws JSONException {
+
+        JSONObject answerRoom = new JSONObject(myUser.get("USER").toString());
+        roomKeyString = answerRoom.get("SUBBEDROOMS").toString();
+
+        //Fjerne og ([),(]),(")
+        roomKeyString = roomKeyString.replace('[', '_');
+        roomKeyString = roomKeyString.replace(']', '_');
+        roomKeyString = roomKeyString.replace('"', '_');
+        roomKeyString = roomKeyString.replaceAll("_", "");
+        //splitter på , for at få de enkelte keys til de enkelte room.
+        roomKeyList = Arrays.asList(roomKeyString.split(","));
+        //List<String> roomKeyList = Arrays.asList(roomKeyString.split(","));
+
+    }
 
 
     public void onClick(View v){
@@ -175,23 +215,12 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                 String returnString = "";
                 returnString = in.readLine();
                 Log.d("ReturnStringUSER", returnString);
-                JSONObject answer = new JSONObject(returnString);
-                Log.d("preMethodDoneUSER", answer.toString());
-
-                if(answer.get("REPLY").equals("succes")){
-                    Log.d("SvarFraServerUSER",answer.toString());
-                    JSONObject answerRoom = new JSONObject(answer.get("USER").toString());
-                    roomKeyString = answerRoom.get("SUBBEDROOMS").toString();
-                    roomKeyString = roomKeyString.replace('[', ' ');
-                    roomKeyString = roomKeyString.replace(']', ' ');
-                    roomKeyString = roomKeyString.trim();
-                    roomKeyList = roomKeyString.split(",");
-                    Log.d("Key 1", roomKeyList[0]);
+                JSONObject answerUser = new JSONObject(returnString);
+                Log.d("preMethodDoneUSER", answerUser.toString());
 
 
-                }
 
-                return answer;
+                return answerUser;
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("Exception", e.toString());
@@ -202,58 +231,85 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         }
         @Override
         protected void onPostExecute(JSONObject result){
-            Log.d("ServerSvarUSER",result.toString());
-            myUser = result;
-            guiUpdaterBool.set(true);
+            Log.d("ServerSvarUSER", result.toString());
+            try {
+                if(result.get("REPLY").toString().equals("succes")){
+                    myUser = result;
+                    guiUpdaterBool.set(true);
+
+
+                }else{
+                    if(result.get("MESSAGE").toString().equals("???")){
+                        //logggedout?
+                        //Error?
+                        //whatever
+                        //Skift fragment??
+                    }
+                    //toast
+                    dismissLoadingDialog();
+                    //andre ting
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
     }
 
-/*
+
     private class GetRoom extends AsyncTask<String, Void,JSONObject>{
 
 
         @Override
         protected JSONObject doInBackground(String... params) {
-            try {
 
+            for (String keyNumerXFromKeyList : roomKeyList) {
+               Log.d("Keys", keyNumerXFromKeyList);
 
-                JSONObject obj = new JSONObject();
                 try {
-                    obj.put("TASK", "getroom");
-                    obj.put("USERNAME", userName);
-                    obj.put("SESSIONKEY", sessionKey);
-                    obj.put("ROOMKEY",roomKeyList[0]);
 
-                } catch (JSONException e) {
+
+                    JSONObject obj = new JSONObject();
+                    try {
+                        obj.put("TASK", "getroom");
+                        obj.put("USERNAME", userName);
+                        obj.put("SESSIONKEY", sessionKey);
+                        //obj.put("ROOMKEY", "abcdefrtghi9847");
+                        //obj.put("ROOMKEY",roomKeyList.get(0));
+                        obj.put("ROOMKEY", keyNumerXFromKeyList);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String combinedMessage = "?logininfo=" + obj.toString();
+                    Log.d("CombinedMessage", combinedMessage);
+                    URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet" + combinedMessage);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String returnString = "";
+                    returnString = in.readLine();
+                    Log.d("ReturnStringROOM", returnString);
+                    JSONObject answerRoom = new JSONObject(returnString);
+                    Log.d("preMethodDoneROOM", answerRoom.toString());
+
+                    if (answerRoom.get("REPLY").equals("succes")) {
+                        Log.d("SvarFraServerROOM", answerRoom.toString());
+
+
+
+                    }
+
+                    return answerRoom;
+                } catch (Exception e) {
                     e.printStackTrace();
-                }
-                String combinedMessage = "?logininfo=" + obj.toString();
-                Log.d("CombinedMessage", combinedMessage);
-                URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet"+combinedMessage);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                String returnString = "";
-                returnString = in.readLine();
-                Log.d("ReturnStringROOM", returnString);
-                JSONObject answer = new JSONObject(returnString);
-                Log.d("preMethodDoneROOM", answer.toString());
-
-                if(answer.get("REPLY").equals("succes")){
-                    Log.d("SvarFraServerROOM",answer.toString());
-
-
-
+                    Log.d("Exception", e.toString());
                 }
 
-                return answer;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("Exception", e.toString());
             }
+
 
 
             return null;
@@ -266,5 +322,5 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         }
     }
-    */
+
 }
