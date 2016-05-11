@@ -33,7 +33,6 @@ import dream_team.distri_app.R;
 public class Frag_menu extends Fragment  implements View.OnClickListener {
     ImageButton btn_add;
     TextView textView;
-    GetSet getset;
 
     final AtomicBoolean guiUpdaterBool = new AtomicBoolean(false);
     private String userName = frag_Login.userName;
@@ -62,7 +61,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         textView = (TextView) getActivity().findViewById(R.id.txtVListe);
         //Skulle gerne kaldes her omkkring...
         showLoadingDialog();
-        getset = new GetSet();
         GetUser getUser = (GetUser) new GetUser().execute(userName);
 
         Thread guiUpdate = new Thread(new Runnable() {
