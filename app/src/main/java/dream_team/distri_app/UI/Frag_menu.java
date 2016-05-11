@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import dream_team.distri_app.R;
@@ -38,11 +39,12 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     private String userName = frag_Login.userName;
     private String sessionKey = frag_Login.sessionKey;
     private ProgressDialog progress;
-    private JSONObject myUser,myRoom;
+    private JSONObject myUser;
+    private List<JSONObject> myRooms = new ArrayList<>();
     String roomKeyString;
+    ArrayAdapter<String> roomListAdapter = null;
 
-
-    List<String> roomKeyList;
+    List<String> roomKeyList = new ArrayList<String>();
     List<String> roomNameList = new ArrayList<String>();
 
 
@@ -58,13 +60,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         btn_add.setOnClickListener(this);
 
         textView = (TextView) getActivity().findViewById(R.id.txtVListe);
-
-       roomNameList.add("KEY");
-       roomNameList.add(sessionKey);
-
-
-
-
         //Skulle gerne kaldes her omkkring...
         showLoadingDialog();
         getset = new GetSet();
@@ -79,7 +74,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         Log.d("MyUser from server", myUser.toString());
                         //kalder metode værk som opdaterer felter.
 
-                        GetRoom getRoom = (GetRoom) new GetRoom().execute(userName);
+                        Log.d("myRooms size", " "+myRooms.size());
 
 
                         try {
@@ -89,16 +84,12 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         }
 
 
-                        guiUpdaterBool.set(false);
+                       guiUpdaterBool.set(false);
                         dismissLoadingDialog();
 
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d("Run Run", "while loop");
+
+                   // Log.d("Run Run", "while loop");
 
                 }
             }
@@ -111,7 +102,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
 
 
-        final ArrayAdapter<String> roomListAdapter = new ArrayAdapter<String>(getActivity(),
+        roomListAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, roomNameList);
 
         ListView lv = (ListView)rod.findViewById(R.id.list);
@@ -128,17 +119,43 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+
         return rod;
     }
 
     private void updateGUImethod() throws JSONException {
-        createRoomList(myUser);
-        pobulateUILists();
+
+        populateUILists();
 
     }
 
-    private void pobulateUILists() {
+    private void updateFragment(){
 
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                roomListAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+
+
+    }
+
+    private void populateUILists() throws JSONException {
+        roomNameList.clear();
+        for (JSONObject u : myRooms){
+
+            Log.d("myrooms size -->", myRooms.size() + "");
+            String title = u.get("TITLE").toString();
+            roomNameList.add(title);
+
+
+        }
+
+        updateFragment();
     }
 
     private void createRoomList(JSONObject myUser) throws JSONException {
@@ -188,7 +205,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         }
     }
 
-    private class GetUser extends AsyncTask<String, Void,JSONObject>{
+    private class GetUser extends AsyncTask<String, Void, JSONObject>{
         @Override
         protected JSONObject doInBackground(String... params) {
             try {
@@ -235,8 +252,14 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
             try {
                 if(result.get("REPLY").toString().equals("succes")){
                     myUser = result;
-                    guiUpdaterBool.set(true);
+                    createRoomList(myUser);
+                    myRooms.clear();
+                    for(String u : roomKeyList){
+                        GetRoom getRoom = (GetRoom) new GetRoom().execute(u);
 
+                    }
+
+                    guiUpdaterBool.set(true);
 
                 }else{
                     if(result.get("MESSAGE").toString().equals("???")){
@@ -246,6 +269,8 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         //Skift fragment??
                     }
                     //toast
+
+
                     dismissLoadingDialog();
                     //andre ting
                 }
@@ -257,14 +282,14 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     }
 
 
-    private class GetRoom extends AsyncTask<String, Void,JSONObject>{
-
+    private class GetRoom extends AsyncTask<String, Void, JSONObject>{
 
         @Override
         protected JSONObject doInBackground(String... params) {
 
-            for (String keyNumerXFromKeyList : roomKeyList) {
-               Log.d("Keys", keyNumerXFromKeyList);
+
+
+
 
                 try {
 
@@ -274,9 +299,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         obj.put("TASK", "getroom");
                         obj.put("USERNAME", userName);
                         obj.put("SESSIONKEY", sessionKey);
-                        //obj.put("ROOMKEY", "abcdefrtghi9847");
-                        //obj.put("ROOMKEY",roomKeyList.get(0));
-                        obj.put("ROOMKEY", keyNumerXFromKeyList);
+                        obj.put("ROOMKEY", params[0]);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -293,22 +316,14 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                     returnString = in.readLine();
                     Log.d("ReturnStringROOM", returnString);
                     JSONObject answerRoom = new JSONObject(returnString);
+                    JSONObject room = new JSONObject(answerRoom.get("ROOM").toString());
+
                     Log.d("preMethodDoneROOM", answerRoom.toString());
-
-                    if (answerRoom.get("REPLY").equals("succes")) {
-                        Log.d("SvarFraServerROOM", answerRoom.toString());
-
-
-
-                    }
-
-                    return answerRoom;
+                    return room;
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("Exception", e.toString());
                 }
-
-            }
 
 
 
@@ -317,7 +332,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         @Override
         protected void onPostExecute(JSONObject result){
             Log.d("ServerSvarROOM",result.toString());
-            myRoom = result;
+            myRooms.add(result);
             guiUpdaterBool.set(true);
 
         }
