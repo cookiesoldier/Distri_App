@@ -165,6 +165,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         roomKeyString = roomKeyString.replace('[', '_');
         roomKeyString = roomKeyString.replace(']', '_');
         roomKeyString = roomKeyString.replace('"', '_');
+        roomKeyString = roomKeyString.replace('\\' , '_');
         roomKeyString = roomKeyString.replaceAll("_", "");
         //splitter på , for at få de enkelte keys til de enkelte room.
         roomKeyList = Arrays.asList(roomKeyString.split(","));
