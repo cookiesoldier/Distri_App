@@ -75,11 +75,11 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         Log.d("myRooms size", " "+myRooms.size());
 
 
-                        try {
-                            updateGUImethod();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                            try {
+                                updateGUImethod();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
 
                        guiUpdaterBool.set(false);
@@ -93,7 +93,10 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
             }
         });
 
-        guiUpdate.start();
+
+
+              guiUpdate.start();
+
 
 
 
@@ -160,17 +163,21 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         JSONObject answerRoom = new JSONObject(myUser.get("USER").toString());
         roomKeyString = answerRoom.get("SUBBEDROOMS").toString();
+        //Checker for om den er null, eller hvis brugeren ikke har nogle rum.
+        if (roomKeyString.equals(null) || roomKeyString.length() < 3) {
+            Log.d("NO Room","No Room");
+        } else {
 
-        //Fjerne og ([),(]),(")
-        roomKeyString = roomKeyString.replace('[', '_');
-        roomKeyString = roomKeyString.replace(']', '_');
-        roomKeyString = roomKeyString.replace('"', '_');
-        roomKeyString = roomKeyString.replace('\\' , '_');
-        roomKeyString = roomKeyString.replaceAll("_", "");
-        //splitter på , for at få de enkelte keys til de enkelte room.
-        roomKeyList = Arrays.asList(roomKeyString.split(","));
-        //List<String> roomKeyList = Arrays.asList(roomKeyString.split(","));
-
+            //Fjerne og ([),(]),(")
+            roomKeyString = roomKeyString.replace('[', '_');
+            roomKeyString = roomKeyString.replace(']', '_');
+            roomKeyString = roomKeyString.replace('"', '_');
+            roomKeyString = roomKeyString.replace('\\', '_');
+            roomKeyString = roomKeyString.replaceAll("_", "");
+            //splitter på , for at få de enkelte keys til de enkelte room.
+            roomKeyList = Arrays.asList(roomKeyString.split(","));
+            //List<String> roomKeyList = Arrays.asList(roomKeyString.split(","));
+        }
     }
 
 
@@ -251,13 +258,21 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
             try {
                 if(result.get("REPLY").toString().equals("succes")){
                     myUser = result;
+
                     createRoomList(myUser);
-                    myRooms.clear();
-                    for(String u : roomKeyList){
-                        GetRoom getRoom = (GetRoom) new GetRoom().execute(u);
+                       myRooms.clear();
+                    if(roomKeyList.size() != 0) {
+                            Log.d("room name", ""+roomKeyList.size());
+                         Log.d("room name", " --->  "+roomKeyList.get(0));
+                        for (String u : roomKeyList) {
 
+                                if(u != null){
+                                    GetRoom getRoom = (GetRoom) new GetRoom().execute(u);
+
+                                Log.d("RoomKeyList ! Tom", "!Tom");
+                                }
+                        }
                     }
-
                     guiUpdaterBool.set(true);
 
                 }else{
@@ -285,10 +300,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         @Override
         protected JSONObject doInBackground(String... params) {
-
-
-
-
 
                 try {
 
