@@ -1,6 +1,7 @@
 package dream_team.distri_app.UI;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,20 +36,34 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     TextView textView;
 
     final AtomicBoolean guiUpdaterBool = new AtomicBoolean(false);
+    final AtomicBoolean guiUpdateThread = new AtomicBoolean(true);
+
     private String userName = frag_Login.userName;
     private String sessionKey = frag_Login.sessionKey;
     private ProgressDialog progress;
     private JSONObject myUser;
     private List<JSONObject> myRooms = new ArrayList<>();
+    public static int keyRoomNumber;
     String roomKeyString;
     ArrayAdapter<String> roomListAdapter = null;
 
-    List<String> roomKeyList = new ArrayList<String>();
+
+    public static List<String> roomKeyList = new ArrayList<String>();
     List<String> roomNameList = new ArrayList<String>();
 
 
 
     public Frag_menu(){
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -63,7 +78,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         showLoadingDialog();
         GetUser getUser = (GetUser) new GetUser().execute(userName);
 
-        Thread guiUpdate = new Thread(new Runnable() {
+        final Thread guiUpdate = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
@@ -105,7 +120,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         roomListAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, roomNameList);
-
+        roomListAdapter.clear();
         ListView lv = (ListView)rod.findViewById(R.id.list);
         lv.setAdapter(roomListAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -118,10 +133,11 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         .commit();
                 Toast.makeText(getActivity(), "Liste click Frag_room " + roomListAdapter.getItem(position),
                         Toast.LENGTH_SHORT).show();
+                guiUpdate.interrupt();
+                keyRoomNumber = position;
+
             }
         });
-
-
         return rod;
     }
 
@@ -163,7 +179,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         JSONObject answerRoom = new JSONObject(myUser.get("USER").toString());
         roomKeyString = answerRoom.get("SUBBEDROOMS").toString();
-        //Checker for om den er null, eller hvis brugeren ikke har nogle rum.
+        //Checker for om den er null, eller hvis brugeren ikke har nogle rum. Dog Kan den godt ha en størrelse på 2 da der kommer [] med fra serveren selv om den ikke rindeholder keys
         if (roomKeyString.equals(null) || roomKeyString.length() < 3) {
             Log.d("NO Room","No Room");
         } else {
@@ -176,7 +192,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
             roomKeyString = roomKeyString.replaceAll("_", "");
             //splitter på , for at få de enkelte keys til de enkelte room.
             roomKeyList = Arrays.asList(roomKeyString.split(","));
-            //List<String> roomKeyList = Arrays.asList(roomKeyString.split(","));
         }
     }
 
@@ -187,8 +202,8 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                     .replace(R.id.fragWindow, new Frag_CreateRoom())
                     .addToBackStack(null)
                     .commit();
-           Toast.makeText(getActivity(), "Create Room ",
-              Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Create Room ",
+                    Toast.LENGTH_LONG).show();
 
         }
 
@@ -262,8 +277,9 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                     createRoomList(myUser);
                        myRooms.clear();
                     if(roomKeyList.size() != 0) {
-                            Log.d("room name", ""+roomKeyList.size());
-                         Log.d("room name", " --->  "+roomKeyList.get(0));
+                        Log.d("room name", ""+roomKeyList.size());
+                        Log.d("room name", " --->  "+roomKeyList.get(0));
+
                         for (String u : roomKeyList) {
 
                                 if(u != null){
@@ -341,7 +357,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         }
         @Override
         protected void onPostExecute(JSONObject result){
-            Log.d("ServerSvarROOM",result.toString());
+            Log.d("ServerSvarROOM", result.toString());
             myRooms.add(result);
             guiUpdaterBool.set(true);
 

@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,6 +29,9 @@ import dream_team.distri_app.R;
 public class Frag_event extends Fragment implements View.OnClickListener {
 
     ImageButton btn_addEvent;
+
+    private int keyRoomNumber = Frag_menu.keyRoomNumber;
+    private List<String> roomKeyList = Frag_menu.roomKeyList;
 
     ProgressDialog progress;
     private String sessionKey = frag_Login.sessionKey;
