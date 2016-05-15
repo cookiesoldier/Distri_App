@@ -48,7 +48,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     ArrayAdapter<String> roomListAdapter = null;
 
 
-    List<String> roomKeyList = new ArrayList<String>();
+    public List<String> roomKeyList = new ArrayList<String>();
     List<String> roomNameList = new ArrayList<String>();
 
 

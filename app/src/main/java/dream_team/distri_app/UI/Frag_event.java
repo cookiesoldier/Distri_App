@@ -31,7 +31,7 @@ public class Frag_event extends Fragment implements View.OnClickListener {
     ImageButton btn_addEvent;
 
     private int keyRoomNumber = Frag_menu.keyRoomNumber;
-    private List<String> roomKeyList = Frag_menu.roomKeyList;
+    private List<JSONObject> roomKeyList = Frag_menu.myRooms;
 
     ProgressDialog progress;
     private String sessionKey = frag_Login.sessionKey;
