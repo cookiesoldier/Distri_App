@@ -42,13 +42,13 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     private String sessionKey = frag_Login.sessionKey;
     private ProgressDialog progress;
     private JSONObject myUser;
-    private List<JSONObject> myRooms = new ArrayList<>();
+    public static List<JSONObject> myRooms = new ArrayList<>();
     public static int keyRoomNumber;
     String roomKeyString;
     ArrayAdapter<String> roomListAdapter = null;
 
 
-    public static List<String> roomKeyList = new ArrayList<String>();
+    List<String> roomKeyList = new ArrayList<String>();
     List<String> roomNameList = new ArrayList<String>();
 
 
@@ -135,6 +135,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                         Toast.LENGTH_SHORT).show();
                 guiUpdate.interrupt();
                 keyRoomNumber = position;
+                Log.d("ROD ____--<<",""+myRooms.get(keyRoomNumber));
 
             }
         });
