@@ -1,6 +1,7 @@
 package dream_team.distri_app.UI;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -35,6 +36,7 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
     String roomKey;
     String serversRooms;
     String listRoom;
+    private JSONObject myNewRoom;
 
     private ProgressDialog progress;
 
@@ -115,23 +117,8 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                             roomKey = room.get("ROOMKEY").toString();
                             Log.d("ROOMKEY", roomKey);
 
-
-                            /*JSONObject obj2 = new JSONObject();
-                            try {
-                                obj2.put("TASK", "UPDATEUSER");
-                                obj2.put("SESSIONKEY", sessionKey);
-                                obj2.put("USERNAME",userName);
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            //serversRooms = answer.get("subbedrooms").toString();
-                            //Log.d("GET ROOM", serversRooms);
-                            //listRoom = serversRooms + roomKey;
-
-*/
                             if (answer.get("REPLY").equals("succes")) {
+                              //  UpdateUser updateUser = (UpdateUser) new UpdateUser().execute();
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -144,6 +131,7 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                                         .replace(R.id.fragWindow, new Frag_event())
                                         .addToBackStack(null)
                                         .commit();
+
 
                             } else if(answer.get("REPLY").equals("failed")){
                                 getActivity().runOnUiThread(new Runnable() {
@@ -208,4 +196,60 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
             progress.dismiss();
         }
     }
+
+
+/*
+private class UpdateUser extends AsyncTask<String, Void, JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            try {
+
+
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("TASK", "UPDATEUSER");
+                    obj.put("USERNAME", userName);
+                    obj.put("SESSIONKEY", sessionKey);
+                    obj.put("GETNAME",params[0]+roomKey);
+                    obj.put("ROOMKEY",)
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String combinedMessage = "?logininfo=" + obj.toString();
+                Log.d("CombinedMessage", combinedMessage);
+                URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet"+combinedMessage);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                String returnString = "";
+                returnString = in.readLine();
+                Log.d("ReturnStringUSER", returnString);
+                JSONObject answerUser = new JSONObject(returnString);
+                Log.d("preMethodDoneUSER", answerUser.toString());
+
+
+
+                return answerUser;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("Exception", e.toString());
+            }
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(JSONObject result){
+            Log.d("ServerSvarUpdateUser", result.toString());
+                    myNewRoom = result;
+
+
+        }
+    }
+    */
+
 }
