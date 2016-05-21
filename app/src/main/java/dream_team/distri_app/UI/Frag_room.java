@@ -11,13 +11,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import dream_team.distri_app.CurrentLogin;
 import dream_team.distri_app.R;
 
 public class Frag_room extends Fragment implements View.OnClickListener{
 
     ImageButton btn_add;
     TextView txtV;
-    private String userName = ("UserName: " + frag_Login.userName);
+    private String userName = ("UserName: " + CurrentLogin.getUserName());
 
     public Frag_room() {
         // Required empty public constructor

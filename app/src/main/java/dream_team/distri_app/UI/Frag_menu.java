@@ -1,5 +1,7 @@
 package dream_team.distri_app.UI;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -113,7 +115,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                 threadUpdate.interrupt();
                 keyRoomNumber = position;
                 Log.d("ROD ____--<<",""+myRooms.get(keyRoomNumber));
-
             }
         });
         return rod;

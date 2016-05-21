@@ -35,9 +35,6 @@ public class frag_Login extends Fragment implements View.OnClickListener {
     Button btnCreateUser, btnLogin;
     EditText edtUsername, edtPassword;
 
-    public static String sessionKey,userName;
-
-
     private ProgressDialog progress;
 
     public frag_Login() {

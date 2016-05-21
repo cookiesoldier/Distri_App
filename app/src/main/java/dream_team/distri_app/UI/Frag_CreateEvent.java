@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dream_team.distri_app.CurrentLogin;
 import dream_team.distri_app.R;
 
 
@@ -33,8 +34,6 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
     EditText edtTitle;
 
     private ProgressDialog progress;
-    private String sessionKey = frag_Login.sessionKey;
-    private String username = frag_Login.userName;
     String eventKey;
 
     Timestamp stamp = new Timestamp(System.currentTimeMillis());
@@ -82,11 +81,11 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
                         JSONObject obj = new JSONObject();
                         try {
                             obj.put("TASK", "CREATEEVENT");
-                            obj.put("CREATOR", username );
+                            obj.put("CREATOR", CurrentLogin.getUserName());
                             obj.put("TITLE", edtTitle.getText().toString());
                             obj.put("TIMESTAMP", date);
-                            obj.put("SESSIONKEY", sessionKey);
-                            obj.put("USERNAME", username);
+                            obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
+                            obj.put("USERNAME", CurrentLogin.getUserName());
 
 
                         } catch (JSONException e) {

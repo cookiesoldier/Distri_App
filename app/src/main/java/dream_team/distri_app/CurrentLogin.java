@@ -5,7 +5,6 @@ package dream_team.distri_app;
  */
 public class CurrentLogin {
     static private String userName;
-    static private String passWord;
     static private String sessionKey;
 
 
@@ -15,14 +14,6 @@ public class CurrentLogin {
 
     public static void setUserName(String userName) {
         CurrentLogin.userName = userName;
-    }
-
-    public static String getPassWord() {
-        return passWord;
-    }
-
-    public static void setPassWord(String passWord) {
-        CurrentLogin.passWord = passWord;
     }
 
     public static String getSessionKey() {
