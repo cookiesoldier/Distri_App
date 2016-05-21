@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dream_team.distri_app.CurrentRoom;
 import dream_team.distri_app.R;
 
 public class Frag_menu extends Fragment  implements View.OnClickListener {
@@ -127,10 +128,27 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                JSONObject currentRoom = myRooms.get(position);
+
+                    CurrentRoom.setEventKeyList(createListEventKeys(currentRoom));
+
+                try {
+                    CurrentRoom.setOwner(currentRoom.get("OWNER").toString());
+
+                CurrentRoom.setRoomKey(currentRoom.get("ROOMKEY").toString());
+                CurrentRoom.setTitle(currentRoom.get("TITLE").toString());
+                CurrentRoom.setType(currentRoom.get("TYPE").toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragWindow, new Frag_room())
                         .addToBackStack(null)
                         .commit();
+
+
                 Toast.makeText(getActivity(), "Liste click Frag_room " + roomListAdapter.getItem(position),
                         Toast.LENGTH_SHORT).show();
                 guiUpdate.interrupt();
@@ -140,6 +158,28 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
             }
         });
         return rod;
+    }
+
+    private List<String> createListEventKeys(JSONObject subbedrooms) {
+
+
+        String eventKeyString = subbedrooms.toString();
+        //Checker for om den er null, eller hvis brugeren ikke har nogle rum. Dog Kan den godt ha en størrelse på 2 da der kommer [] med fra serveren selv om den ikke rindeholder keys
+        if (eventKeyString.equals(null) || eventKeyString.length() < 3) {
+            Log.d("NO EVENT","No EVENT");
+        } else {
+
+            //Fjerne og ([),(]),(")
+            eventKeyString = eventKeyString.replace('[', '_');
+            eventKeyString = eventKeyString.replace(']', '_');
+            eventKeyString = eventKeyString.replace('"', '_');
+            eventKeyString = eventKeyString.replace('\\', '_');
+            eventKeyString = eventKeyString.replaceAll("_", "");
+            //splitter på , for at få de enkelte keys til de enkelte room.
+            //eventKeyList = Arrays.asList(eventKeyString.split(","));
+
+        }
+        return  Arrays.asList(eventKeyString.split(","));
     }
 
     private void updateGUImethod() throws JSONException {
