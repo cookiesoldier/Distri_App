@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dream_team.distri_app.CurrentUser;
 import dream_team.distri_app.CurrentRoom;
 import dream_team.distri_app.R;
 
@@ -47,9 +48,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     public static int keyRoomNumber;
     String roomKeyString;
     ArrayAdapter<String> roomListAdapter = null;
-
-
-    public List<String> roomKeyList = new ArrayList<String>();
     List<String> roomNameList = new ArrayList<String>();
 
 
@@ -216,9 +214,10 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         updateFragment();
     }
 
-    private void createRoomList(JSONObject myUser) throws JSONException {
+    private void currentUserSet(JSONObject myUser) throws JSONException {
 
         JSONObject answerRoom = new JSONObject(myUser.get("USER").toString());
+
         roomKeyString = answerRoom.get("SUBBEDROOMS").toString();
         //Checker for om den er null, eller hvis brugeren ikke har nogle rum. Dog Kan den godt ha en størrelse på 2 da der kommer [] med fra serveren selv om den ikke rindeholder keys
         if (roomKeyString.equals(null) || roomKeyString.length() < 3) {
@@ -231,8 +230,17 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
             roomKeyString = roomKeyString.replace('"', '_');
             roomKeyString = roomKeyString.replace('\\', '_');
             roomKeyString = roomKeyString.replaceAll("_", "");
+            roomKeyString = roomKeyString.replaceAll(" ","");
             //splitter på , for at få de enkelte keys til de enkelte room.
-            roomKeyList = Arrays.asList(roomKeyString.split(","));
+            ArrayList<String> list = new ArrayList<>(Arrays.asList(roomKeyString.split(",")));
+            CurrentUser.setSubbedRoomsKeys(list);
+
+            CurrentUser.setFirstName(answerRoom.get("FIRSTNAME").toString());
+            CurrentUser.setLastName(answerRoom.get("LASTNAME").toString());
+            CurrentUser.setUserName(answerRoom.get("USERNAME").toString());
+            CurrentUser.setEmail(answerRoom.get("EMAIL").toString());
+            CurrentUser.setPassword(answerRoom.get("PASSWORD").toString());
+
         }
     }
 
@@ -315,13 +323,13 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                 if(result.get("REPLY").toString().equals("succes")){
                     myUser = result;
 
-                    createRoomList(myUser);
+                    currentUserSet(myUser);
                        myRooms.clear();
-                    if(roomKeyList.size() != 0) {
-                        Log.d("room name", ""+roomKeyList.size());
-                        Log.d("room name", " --->  "+roomKeyList.get(0));
+                    if(CurrentUser.getSubbedRoomsKeys().size() != 0) {
+                        Log.d("room name", "" + CurrentUser.getSubbedRoomsKeys().size());
+                        Log.d("room name", " --->  "+CurrentUser.getSubbedRoomsKeys().get(0));
 
-                        for (String u : roomKeyList) {
+                        for (String u : CurrentUser.getSubbedRoomsKeys()) {
 
                                 if(u != null){
                                     GetRoom getRoom = (GetRoom) new GetRoom().execute(u);
