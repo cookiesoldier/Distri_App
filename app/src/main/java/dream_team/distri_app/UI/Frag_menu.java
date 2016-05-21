@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +39,6 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     TextView textView;
 
     final AtomicBoolean guiUpdaterBool = new AtomicBoolean(false);
-    final AtomicBoolean guiUpdateThread = new AtomicBoolean(true);
 
     private String userName = frag_Login.userName;
     private String sessionKey = frag_Login.sessionKey;
@@ -63,6 +63,10 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        myRooms.clear();
+        roomNameList.clear();
+        roomListAdapter.notifyDataSetChanged();
+        roomListAdapter.clear();
     }
 
     @Override
@@ -74,6 +78,52 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         textView = (TextView) getActivity().findViewById(R.id.txtVListe);
         //Skulle gerne kaldes her omkkring...
+        final Thread guiUpdate = updateGui();
+
+
+        //RoomlistAdaptet for listViewet som vises i fragment.
+        roomListAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, roomNameList);
+        roomListAdapter.clear();
+        ListView lv = (ListView)rod.findViewById(R.id.list);
+        lv.setAdapter(roomListAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                JSONObject currentRoom = myRooms.get(position);
+
+                    CurrentRoom.setEventKeyList(createListEventKeys(currentRoom));
+
+                try {
+                    CurrentRoom.setOwner(currentRoom.get("OWNER").toString());
+                    CurrentRoom.setRoomKey(currentRoom.get("ROOMKEY").toString());
+                    CurrentRoom.setTitle(currentRoom.get("TITLE").toString());
+                    CurrentRoom.setType(currentRoom.get("TYPE").toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragWindow, new Frag_room())
+                        .addToBackStack(null)
+                        .commit();
+
+
+                Toast.makeText(getActivity(), "Liste click Frag_room " + roomListAdapter.getItem(position),
+                        Toast.LENGTH_SHORT).show();
+                guiUpdate.interrupt();
+                keyRoomNumber = position;
+                Log.d("ROD ____--<<",""+myRooms.get(keyRoomNumber));
+
+            }
+        });
+        return rod;
+    }
+
+    @NonNull
+    private Thread updateGui() {
         showLoadingDialog();
         GetUser getUser = (GetUser) new GetUser().execute(userName);
 
@@ -108,54 +158,8 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
         });
 
 
-
-              guiUpdate.start();
-
-
-
-
-
-
-
-        roomListAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, roomNameList);
-        roomListAdapter.clear();
-        ListView lv = (ListView)rod.findViewById(R.id.list);
-        lv.setAdapter(roomListAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-
-                JSONObject currentRoom = myRooms.get(position);
-
-                    CurrentRoom.setEventKeyList(createListEventKeys(currentRoom));
-
-                try {
-                    CurrentRoom.setOwner(currentRoom.get("OWNER").toString());
-
-                CurrentRoom.setRoomKey(currentRoom.get("ROOMKEY").toString());
-                CurrentRoom.setTitle(currentRoom.get("TITLE").toString());
-                CurrentRoom.setType(currentRoom.get("TYPE").toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragWindow, new Frag_room())
-                        .addToBackStack(null)
-                        .commit();
-
-
-                Toast.makeText(getActivity(), "Liste click Frag_room " + roomListAdapter.getItem(position),
-                        Toast.LENGTH_SHORT).show();
-                guiUpdate.interrupt();
-                keyRoomNumber = position;
-                Log.d("ROD ____--<<",""+myRooms.get(keyRoomNumber));
-
-            }
-        });
-        return rod;
+        guiUpdate.start();
+        return guiUpdate;
     }
 
     private List<String> createListEventKeys(JSONObject subbedrooms) {
