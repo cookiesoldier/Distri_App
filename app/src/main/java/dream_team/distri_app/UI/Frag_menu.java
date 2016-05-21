@@ -1,7 +1,6 @@
 package dream_team.distri_app.UI;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,9 +26,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dream_team.distri_app.CurrentLogin;
 import dream_team.distri_app.CurrentUser;
 import dream_team.distri_app.CurrentRoom;
 import dream_team.distri_app.R;
@@ -39,9 +38,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     TextView textView;
 
     final AtomicBoolean guiUpdaterBool = new AtomicBoolean(false);
-
-    private String userName = frag_Login.userName;
-    private String sessionKey = frag_Login.sessionKey;
+;
     private ProgressDialog progress;
     private JSONObject myUser;
     public static List<JSONObject> myRooms = new ArrayList<>();
@@ -78,7 +75,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
         textView = (TextView) getActivity().findViewById(R.id.txtVListe);
         //Skulle gerne kaldes her omkkring...
-        final Thread guiUpdate = updateGui();
+        final Thread threadUpdate = updateMainThread();
 
 
         //RoomlistAdaptet for listViewet som vises i fragment.
@@ -113,7 +110,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
 
                 Toast.makeText(getActivity(), "Liste click Frag_room " + roomListAdapter.getItem(position),
                         Toast.LENGTH_SHORT).show();
-                guiUpdate.interrupt();
+                threadUpdate.interrupt();
                 keyRoomNumber = position;
                 Log.d("ROD ____--<<",""+myRooms.get(keyRoomNumber));
 
@@ -123,9 +120,9 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
     }
 
     @NonNull
-    private Thread updateGui() {
+    private Thread updateMainThread() {
         showLoadingDialog();
-        GetUser getUser = (GetUser) new GetUser().execute(userName);
+        GetUser getUser = (GetUser) new GetUser().execute(CurrentLogin.getUserName());
 
         final Thread guiUpdate = new Thread(new Runnable() {
             @Override
@@ -288,8 +285,8 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                 JSONObject obj = new JSONObject();
                 try {
                     obj.put("TASK", "getuser");
-                    obj.put("USERNAME", userName);
-                    obj.put("SESSIONKEY", sessionKey);
+                    obj.put("USERNAME", CurrentLogin.getUserName());
+                    obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
                     obj.put("GETNAME",params[0]);
 
                 } catch (JSONException e) {
@@ -376,8 +373,8 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                     JSONObject obj = new JSONObject();
                     try {
                         obj.put("TASK", "getroom");
-                        obj.put("USERNAME", userName);
-                        obj.put("SESSIONKEY", sessionKey);
+                        obj.put("USERNAME", CurrentLogin.getUserName());
+                        obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
                         obj.put("ROOMKEY", params[0]);
 
                     } catch (JSONException e) {

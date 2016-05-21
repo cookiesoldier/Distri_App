@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dream_team.distri_app.CurrentLogin;
 import dream_team.distri_app.R;
 
 
@@ -96,8 +97,8 @@ public class frag_Login extends Fragment implements View.OnClickListener {
                             JSONObject answer = new JSONObject(returnString);
 
                             if (answer.get("REPLY").equals("succes")) {
-                                userName = edtUsername.getText().toString();
-                                sessionKey = answer.get("SESSIONKEY").toString();
+                                CurrentLogin.setUserName(edtUsername.getText().toString());
+                                CurrentLogin.setSessionKey(answer.get("SESSIONKEY").toString());
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

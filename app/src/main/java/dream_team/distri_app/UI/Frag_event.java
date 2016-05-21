@@ -31,6 +31,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dream_team.distri_app.CurrentLogin;
 import dream_team.distri_app.CurrentRoom;
 import dream_team.distri_app.R;
 
@@ -220,8 +221,8 @@ public class Frag_event extends Fragment implements View.OnClickListener {
                 JSONObject obj = new JSONObject();
                 try {
                     obj.put("TASK", "getroom");
-                    obj.put("USERNAME", frag_Login.userName);
-                    obj.put("SESSIONKEY", frag_Login.sessionKey);
+                    obj.put("USERNAME", CurrentLogin.getUserName());
+                    obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
                     obj.put("ROOMKEY",params[0]);
 
                 } catch (JSONException e) {
@@ -307,8 +308,8 @@ public class Frag_event extends Fragment implements View.OnClickListener {
                 JSONObject obj = new JSONObject();
                 try {
                     obj.put("TASK", "getevent");
-                    obj.put("USERNAME", frag_Login.userName);
-                    obj.put("SESSIONKEY", frag_Login.sessionKey);
+                    obj.put("USERNAME", CurrentLogin.getUserName());
+                    obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
                     obj.put("EVENTKEY", params[0]);
 
                 } catch (JSONException e) {

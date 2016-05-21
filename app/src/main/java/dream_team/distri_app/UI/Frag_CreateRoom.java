@@ -24,6 +24,7 @@ import java.security.acl.Owner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dream_team.distri_app.CurrentLogin;
 import dream_team.distri_app.CurrentUser;
 import dream_team.distri_app.R;
 
@@ -32,12 +33,7 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
     Button btnSubmitRoom;
     EditText edtRoomName, edtType;
 
-    private String userName = frag_Login.userName; //Bruger navn hentes fra login
-    private String sessionKey = frag_Login.sessionKey; //Hentes som en den af det return der kommer fra serveren når man logger ind.
     String roomKey;
-    String serversRooms;
-    String listRoom;
-    private JSONObject myNewRoom;
 
     private ProgressDialog progress;
 
@@ -85,10 +81,10 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                         try {
                             obj.put("TASK", "CREATEROOM");
                             obj.put("TITLE", edtRoomName.getText().toString());
-                            obj.put("OWNER", userName);
+                            obj.put("OWNER", CurrentLogin.getUserName());
                             obj.put("TYPE", edtType.getText().toString());
-                            obj.put("SESSIONKEY", sessionKey);
-                            obj.put("USERNAME",userName);
+                            obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
+                            obj.put("USERNAME",CurrentLogin.getUserName());
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -206,8 +202,8 @@ public class Frag_CreateRoom extends Fragment implements View.OnClickListener{
                 JSONObject obj = new JSONObject();
                 try {
                     obj.put("TASK", "UPDATEUSER");
-                    obj.put("SESSIONKEY", sessionKey);
-                    obj.put("USERNAME", userName);
+                    obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
+                    obj.put("USERNAME", CurrentLogin.getUserName());
                     obj.put("PASSWORD", CurrentUser.getPassword());
                     obj.put("LASTNAME",CurrentUser.getLastName());
                     obj.put("FIRSTNAME", CurrentUser.getFirstName());
