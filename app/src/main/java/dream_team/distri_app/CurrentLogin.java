@@ -2,6 +2,7 @@ package dream_team.distri_app;
 
 /**
  * Created by Kenneth on 21/05/16.
+ * Her gemmes Data fra login som kan bruges sener i programmet.
  */
 public class CurrentLogin {
     static private String userName;
