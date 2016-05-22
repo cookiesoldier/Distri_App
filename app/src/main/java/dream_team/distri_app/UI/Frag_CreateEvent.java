@@ -1,6 +1,7 @@
 package dream_team.distri_app.UI;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,6 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import dream_team.distri_app.CurrentLogin;
+import dream_team.distri_app.CurrentRoom;
 import dream_team.distri_app.R;
 
 
@@ -116,9 +118,11 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
                         if (answer.get("REPLY").equals("succes")){
                             eventKey = event.get("EVENTKEY").toString();
                             Log.d("EVENTKEY", eventKey);
-//
-//                            Log.d("ReturnMessage:", returnString);
-//                            Log.d(answer.get("EVENT").toString(), "event");
+
+                            CurrentRoom.getTitle();
+                            new UpdateRoom().execute();
+
+
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -162,6 +166,65 @@ public class Frag_CreateEvent extends Fragment implements View.OnClickListener {
         }
     }
 
+    private class UpdateRoom extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            try {
+                URL url = new URL("http://52.58.112.107:8080/HelpingTeacherServer2/HTSservlet");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("TASK", "UPDATEROOM");
+                    obj.put("SESSIONKEY", CurrentLogin.getSessionKey());
+                    obj.put("USERNAME", CurrentLogin.getUserName());
+                    obj.put("OWNER", CurrentRoom.getOwner());
+                    obj.put("TYPE",CurrentRoom.getType());
+                    obj.put("ROOMKEYS", CurrentRoom.getRoomKey());
+                    obj.put("TITLE", CurrentRoom.getTitle());
+                    obj.put("EVENTKEYS", CurrentRoom.getEventKeyList());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String combinedMessage = obj.toString();
+                Log.d("CombinedMessage", combinedMessage);
+                //http://developer.android.com/reference/java/net/HttpURLConnection.html
+                connection.setDoOutput(true);
+                //i would like to PUT
+                connection.setRequestMethod("PUT");
+                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+                out.write(combinedMessage);
+                out.close();
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                String returnString = "";
+                returnString = in.readLine();
+                JSONObject answerUpdateRoom = new JSONObject(returnString);
+
+                Log.d(returnString, "");
+
+                return answerUpdateRoom;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("Exception", e.toString());
+            }
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(JSONObject result){
+            Log.d("ServerSvarROOM", result.toString());
+            dismissLoadingDialog();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragWindow, new Frag_event())
+                    .addToBackStack(null)
+                    .commit();
+
+        }
+    }
 
 
 

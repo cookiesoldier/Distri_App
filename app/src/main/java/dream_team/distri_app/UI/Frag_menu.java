@@ -105,7 +105,7 @@ public class Frag_menu extends Fragment  implements View.OnClickListener {
                     e.printStackTrace();
                 }
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.fragWindow, new Frag_room())
+                        .replace(R.id.fragWindow, new Frag_event())
                         .addToBackStack(null)
                         .commit();
 
