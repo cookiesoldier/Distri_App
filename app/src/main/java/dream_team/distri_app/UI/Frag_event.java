@@ -206,6 +206,7 @@ public class Frag_event extends Fragment implements View.OnClickListener {
             eventKeyString = eventKeyString.replace('"', '_');
             eventKeyString = eventKeyString.replace('\\', '_');
             eventKeyString = eventKeyString.replaceAll("_", "");
+            eventKeyString = eventKeyString.replaceAll(" ","");
             //splitter på , for at få de enkelte keys til de enkelte room.
             //eventKeyList = Arrays.asList(eventKeyString.split(","));
             CurrentRoom.setEventKeyList(Arrays.asList(eventKeyString.split(",")));
